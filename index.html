@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Boomi Recommended Training Paths</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  .boomi-paths {
+    --bp-navy: #0a1f44;
+    --bp-navy-soft: #1a2f5a;
+    --bp-text: #1a2238;
+    --bp-muted: #5b6478;
+    --bp-bg: #ffffff;
+    --bp-arrow: #6a7287;
+    --bp-border: #cdd3df;
+    --bp-admin: #1a8cd8;
+    --bp-architect: #ff7a5c;
+    --bp-int-dev: #0a1f44;
+    --bp-api: #4dbfa6;
+    --bp-event: #7ec5e3;
+    --bp-ai: #6b46c1;
+    --bp-b2b: #80b9d8;
+    --bp-datahub: #6dd2bd;
+    --bp-flow: #e66b5b;
+
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+                 "Helvetica Neue", Arial, sans-serif;
+    color: var(--bp-text);
+    background: var(--bp-bg);
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 16px 12px 24px;
+    box-sizing: border-box;
+    line-height: 1.25;
+  }
+  .boomi-paths *, .boomi-paths *::before, .boomi-paths *::after {
+    box-sizing: border-box;
+  }
+
+  /* Header */
+  .bp-header {
+    margin-bottom: 12px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 16px;
+  }
+  .bp-header h1 {
+    font-size: clamp(18px, 2.4vw, 24px);
+    font-weight: 800;
+    letter-spacing: -0.01em;
+    color: var(--bp-navy);
+    margin: 0;
+    text-transform: uppercase;
+  }
+  .bp-header p {
+    font-size: 11.5px;
+    color: var(--bp-muted);
+    margin: 0;
+    max-width: 720px;
+    font-style: italic;
+  }
+  .bp-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    font-size: 11px;
+    color: var(--bp-muted);
+    margin-left: auto;
+  }
+  .bp-legend-item { display: inline-flex; align-items: center; gap: 6px; }
+  .bp-legend-swatch {
+    display: inline-block; width: 14px; height: 14px; border-radius: 3px;
+    border: 1.5px solid var(--bp-navy);
+  }
+  .bp-legend-swatch.course { background: #fff; }
+  .bp-legend-swatch.cert { background: var(--bp-navy); }
+
+  /* ---------- Main flowchart ----------
+     Single grid. Each row sizes to its content (auto rows).
+     - column 1: role tab
+     - column 2: shared "Getting Started" spine (spans all 9 rows)
+     - column 3: course/cert flow
+  */
+  .bp-chart {
+    display: grid;
+    grid-template-columns: 150px 110px minmax(0, 1fr);
+    grid-template-rows: repeat(9, minmax(42px, auto));
+    row-gap: 4px;
+    align-items: stretch;
+  }
+
+  /* Pair each role with its track in the same grid row */
+  .bp-row-1 { grid-row: 1; }
+  .bp-row-2 { grid-row: 2; }
+  .bp-row-3 { grid-row: 3; }
+  .bp-row-4 { grid-row: 4; }
+  .bp-row-5 { grid-row: 5; }
+  .bp-row-6 { grid-row: 6; }
+  .bp-row-7 { grid-row: 7; }
+  .bp-row-8 { grid-row: 8; }
+  .bp-row-9 { grid-row: 9; }
+
+  .bp-role {
+    grid-column: 1;
+    display: flex; align-items: center;
+    padding: 0 10px;
+    color: #fff;
+    font-weight: 700;
+    font-size: 12px;
+    line-height: 1.1;
+    background: var(--role-color, var(--bp-navy));
+    border-radius: 4px;
+    position: relative;
+  }
+  .bp-role::after {
+    content: "";
+    position: absolute;
+    right: -8px; top: 50%;
+    width: 0; height: 0;
+    border-top: 8px solid transparent;
+    border-bottom: 8px solid transparent;
+    border-left: 8px solid var(--role-color, var(--bp-navy));
+    transform: translateY(-50%);
+  }
+  .bp-role-icon {
+    width: 20px; height: 20px; flex-shrink: 0;
+    margin-right: 6px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.25);
+    display: grid; place-items: center;
+  }
+  .bp-role-icon svg { width: 12px; height: 12px; fill: #fff; }
+
+  /* Spine spans all rows in column 2 */
+  .bp-spine {
+    grid-column: 2;
+    grid-row: 1 / span 9;
+    margin: 0 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    background: linear-gradient(180deg, #f3f6fb 0%, #e7eef7 100%);
+    border: 1px solid var(--bp-border);
+    border-radius: 8px;
+    padding: 8px 6px;
+    text-decoration: none;
+    color: var(--bp-navy);
+    transition: transform .12s, box-shadow .15s, background .15s;
+  }
+  .bp-spine:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(10,31,68,.14);
+    background: linear-gradient(180deg, #eaf0f9 0%, #dee7f4 100%);
+  }
+  .bp-spine-icon {
+    width: 36px; height: 36px;
+    background: var(--bp-navy);
+    color: #fff;
+    border-radius: 50%;
+    display: grid; place-items: center;
+    font-size: 18px;
+    margin-bottom: 8px;
+  }
+  .bp-spine-label {
+    font-weight: 700;
+    font-size: 11.5px;
+    line-height: 1.2;
+  }
+
+  .bp-track {
+    grid-column: 3;
+    padding-left: 8px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  .bp-flow {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    gap: 4px;
+    overflow-x: auto;
+    scrollbar-width: thin;
+    padding: 2px 0;
+  }
+  .bp-flow::-webkit-scrollbar { height: 5px; }
+  .bp-flow::-webkit-scrollbar-thumb {
+    background: var(--bp-border); border-radius: 3px;
+  }
+  .bp-branches {
+    display: grid;
+    gap: 3px;
+  }
+
+  /* Course / Cert boxes */
+  .bp-box {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 4px 8px;
+    border-radius: 5px;
+    border: 1.5px solid var(--bp-navy);
+    background: #fff;
+    color: var(--bp-navy);
+    font-size: 10.5px;
+    font-weight: 600;
+    line-height: 1.15;
+    text-decoration: none;
+    min-height: 36px;
+    width: 115px;
+    flex-shrink: 0;
+    transition: transform .12s, box-shadow .15s, background-color .15s, color .15s;
+    cursor: pointer;
+  }
+  .bp-box:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 10px rgba(10,31,68,.18);
+    background: #f0f5fc;
+  }
+  .bp-box:focus-visible {
+    outline: 2px solid #ffbf47;
+    outline-offset: 2px;
+  }
+  .bp-box.is-cert {
+    background: var(--bp-navy);
+    color: #fff;
+    border-color: var(--bp-navy);
+  }
+  .bp-box.is-cert:hover {
+    background: var(--bp-navy-soft);
+    border-color: var(--bp-navy-soft);
+    color: #fff;
+  }
+  .bp-box.is-wide { width: 145px; }
+  .bp-box.is-narrow { width: 95px; }
+
+  /* Arrow connector */
+  .bp-arrow {
+    flex-shrink: 0;
+    width: 12px;
+    height: 2px;
+    background: var(--bp-arrow);
+    position: relative;
+    align-self: center;
+  }
+  .bp-arrow::after {
+    content: "";
+    position: absolute;
+    right: -1px; top: 50%;
+    width: 0; height: 0;
+    border-top: 4px solid transparent;
+    border-bottom: 4px solid transparent;
+    border-left: 6px solid var(--bp-arrow);
+    transform: translateY(-50%);
+  }
+
+  .bp-footer {
+    margin-top: 10px;
+    font-size: 10.5px;
+    color: var(--bp-muted);
+  }
+
+  /* Responsive collapse */
+  @media (max-width: 980px) {
+    .bp-chart {
+      grid-template-columns: 1fr;
+      grid-auto-rows: auto;
+      row-gap: 16px;
+    }
+    .bp-role {
+      grid-column: 1;
+      grid-row: auto !important;
+      border-radius: 6px 6px 0 0;
+      min-height: 42px;
+    }
+    .bp-role::after { display: none; }
+    .bp-track {
+      grid-column: 1;
+      grid-row: auto !important;
+      padding: 12px;
+      border: 1px solid var(--bp-border);
+      border-top: none;
+      border-radius: 0 0 6px 6px;
+      margin-bottom: 4px;
+    }
+    .bp-spine {
+      grid-column: 1;
+      grid-row: auto !important;
+      margin: 0 0 16px;
+      flex-direction: row;
+      padding: 12px 16px;
+    }
+    .bp-spine-icon { margin: 0 12px 0 0; width: 40px; height: 40px; font-size: 20px; }
+    .bp-flow { flex-wrap: wrap; }
+  }
+</style>
+</head>
+<body>
+
+<div class="boomi-paths">
+
+  <!-- HEADER -->
+  <header class="bp-header">
+    <h1>Recommended Training Paths<sup style="font-size:0.4em; vertical-align:super;">*</sup></h1>
+    <p>*Note: This chart shows the recommended completion order to get you started. Explore the full training site for all available courses. Click any box to open it.</p>
+    <div class="bp-legend" aria-hidden="true">
+      <span class="bp-legend-item"><span class="bp-legend-swatch course"></span>Course</span>
+      <span class="bp-legend-item"><span class="bp-legend-swatch cert"></span>Certification</span>
+    </div>
+  </header>
+
+  <!-- FLOWCHART -->
+  <div class="bp-chart">
+
+    <!-- Spine — spans all rows in column 2 -->
+    <a class="bp-spine" id="bp-link-getting-started" aria-label="Getting Started with the Boomi Platform">
+      <span class="bp-spine-icon">&#128640;</span>
+      <span class="bp-spine-label">Getting Started<br>with the Boomi<br>Platform</span>
+    </a>
+
+    <!-- Row 1: Platform Administrator -->
+    <div class="bp-role bp-row-1" style="--role-color: var(--bp-admin);">
+      <span class="bp-role-icon"><svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg></span>Platform<br>Administrator
+    </div>
+    <div class="bp-track bp-row-1">
+      <div class="bp-flow">
+        <a class="bp-box" id="bp-link-integration-essentials-admin">Integration Essentials</a>
+        <span class="bp-arrow"></span>
+        <a class="bp-box" id="bp-link-associate-administrator">Associate Administrator</a>
+        <span class="bp-arrow"></span>
+        <a class="bp-box is-cert is-wide" id="bp-link-associate-administrator-cert">Associate Administrator Certification</a>
+        <span class="bp-arrow"></span>
+        <div class="bp-branches">
+          <div class="bp-flow" style="overflow:visible;padding:0;">
+            <a class="bp-box" id="bp-link-administrator-2-windows">Administrator 2 Windows</a>
+            <span class="bp-arrow"></span>
+            <a class="bp-box is-cert is-wide" id="bp-link-pro-windows-admin-cert">Professional Windows Operational Administration Certification</a>
+          </div>
+          <div class="bp-flow" style="overflow:visible;padding:0;">
+            <a class="bp-box" id="bp-link-administrator-2-linux">Administrator 2 Linux</a>
+            <span class="bp-arrow"></span>
+            <a class="bp-box is-cert is-wide" id="bp-link-pro-linux-admin-cert">Professional Linux Operational Administrator Certification</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Row 2: Platform Architect -->
+    <div class="bp-role bp-row-2" style="--role-color: var(--bp-architect);">
+      <span class="bp-role-icon"><svg viewBox="0 0 24 24"><path d="M12 2L2 22h20L12 2z"/></svg></span>Platform<br>Architect
+    </div>
+    <div class="bp-track bp-row-2">
+      <div class="bp-flow">
+        <a class="bp-box" id="bp-link-integration-essentials-arch">Integration Essentials</a>
+        <span class="bp-arrow"></span>
+        <div class="bp-branches">
+          <div class="bp-flow" style="overflow:visible;padding:0;">
+            <a class="bp-box" id="bp-link-associate-integration-architect">Associate Integration Architect</a>
+            <span class="bp-arrow"></span>
+            <a class="bp-box is-cert is-wide" id="bp-link-associate-integration-architect-cert">Associate Integration Architect Certification</a>
+          </div>
+          <div class="bp-flow" style="overflow:visible;padding:0;">
+            <a class="bp-box is-wide" id="bp-link-runtime-architect-path">Associate Runtime Architect Path (3 courses)</a>
+            <span class="bp-arrow"></span>
+            <a class="bp-box is-cert is-wide" id="bp-link-associate-runtime-architect-cert">Associate Runtime Architect Certification</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Row 3: Integration Developer -->
+    <div class="bp-role bp-row-3" style="--role-color: var(--bp-int-dev);">
+      <span class="bp-role-icon"><svg viewBox="0 0 24 24"><path d="M8 16l-4-4 4-4M16 8l4 4-4 4"/></svg></span>Integration<br>Developer
+    </div>
+    <div class="bp-track bp-row-3">
+      <div class="bp-flow">
+        <a class="bp-box" id="bp-link-integration-essentials-dev">Integration Essentials</a><span class="bp-arrow"></span>
+        <a class="bp-box" id="bp-link-associate-integration-developer">Associate Integration Developer</a><span class="bp-arrow"></span>
+        <a class="bp-box is-cert" id="bp-link-associate-developer-cert">Associate Developer Certification</a><span class="bp-arrow"></span>
+        <a class="bp-box" id="bp-link-professional-integration-developer">Professional Integration Developer</a><span class="bp-arrow"></span>
+        <a class="bp-box is-cert" id="bp-link-professional-developer-cert">Professional Developer Certification</a>
+      </div>
+    </div>
+
+    <!-- Row 4: API Management -->
+    <div class="bp-role bp-row-4" style="--role-color: var(--bp-api);">
+      <span class="bp-role-icon"><svg viewBox="0 0 24 24"><path d="M4 6h16v4H4zM4 14h16v4H4z"/></svg></span>API<br>Management
+    </div>
+    <div class="bp-track bp-row-4">
+      <div class="bp-flow">
+        <a class="bp-box" id="bp-link-integration-essentials-api">Integration Essentials</a><span class="bp-arrow"></span>
+        <a class="bp-box" id="bp-link-associate-integration-developer-api">Associate Integration Developer</a><span class="bp-arrow"></span>
+        <a class="bp-box" id="bp-link-professional-integration-developer-api">Professional Integration Developer</a><span class="bp-arrow"></span>
+        <a class="bp-box" id="bp-link-professional-api-design">Professional API Design</a><span class="bp-arrow"></span>
+        <a class="bp-box is-cert" id="bp-link-professional-api-design-cert">Professional API Design Certification</a><span class="bp-arrow"></span>
+        <a class="bp-box" id="bp-link-professional-api-management">Professional API Management</a><span class="bp-arrow"></span>
+        <a class="bp-box is-cert" id="bp-link-professional-api-management-cert">Professional API Management Certification</a>
+      </div>
+    </div>
+
+    <!-- Row 5: Event Streams -->
+    <div class="bp-role bp-row-5" style="--role-color: var(--bp-event);">
+      <span class="bp-role-icon"><svg viewBox="0 0 24 24"><path d="M3 12h4l3-9 4 18 3-9h4"/></svg></span>Event<br>Streams
+    </div>
+    <div class="bp-track bp-row-5">
+      <div class="bp-flow">
+        <a class="bp-box" id="bp-link-integration-essentials-event">Integration Essentials</a><span class="bp-arrow"></span>
+        <a class="bp-box" id="bp-link-associate-integration-developer-event">Associate Integration Developer</a><span class="bp-arrow"></span>
+        <a class="bp-box" id="bp-link-professional-integration-developer-event">Professional Integration Developer</a><span class="bp-arrow"></span>
+        <a class="bp-box" id="bp-link-associate-event-streams">Associate Event Streams</a><span class="bp-arrow"></span>
+        <a class="bp-box is-cert" id="bp-link-associate-event-streams-cert">Associate Event Streams Certification</a>
+      </div>
+    </div>
+
+    <!-- Row 6: Boomi AI -->
+    <div class="bp-role bp-row-6" style="--role-color: var(--bp-ai);">
+      <span class="bp-role-icon"><svg viewBox="0 0 24 24"><path d="M12 2a5 5 0 015 5v3a5 5 0 01-10 0V7a5 5 0 015-5zM6 14h12v6H6z"/></svg></span>Boomi AI
+    </div>
+    <div class="bp-track bp-row-6">
+      <div class="bp-flow">
+        <a class="bp-box is-wide" id="bp-link-using-ai-agents-boomi-answers">Using AI Agents: Boomi Answers</a><span class="bp-arrow"></span>
+        <a class="bp-box is-wide" id="bp-link-building-ai-agent-agentstudio">Building an AI Agent with Agentstudio</a>
+      </div>
+    </div>
+
+    <!-- Row 7: B2B / EDI Management -->
+    <div class="bp-role bp-row-7" style="--role-color: var(--bp-b2b);">
+      <span class="bp-role-icon"><svg viewBox="0 0 24 24"><path d="M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM13 13h7v7h-7z"/></svg></span>B2B / EDI<br>Management
+    </div>
+    <div class="bp-track bp-row-7">
+      <div class="bp-flow">
+        <a class="bp-box" id="bp-link-edi-essentials">EDI Essentials</a><span class="bp-arrow"></span>
+        <a class="bp-box" id="bp-link-integration-essentials-b2b">Integration Essentials</a><span class="bp-arrow"></span>
+        <a class="bp-box" id="bp-link-associate-edi-x12">Associate EDI for X12</a><span class="bp-arrow"></span>
+        <a class="bp-box is-cert" id="bp-link-associate-edi-x12-cert">Associate EDI for X12 Certification</a>
+      </div>
+    </div>
+
+    <!-- Row 8: DataHub -->
+    <div class="bp-role bp-row-8" style="--role-color: var(--bp-datahub);">
+      <span class="bp-role-icon"><svg viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v6c0 1.66 3.58 3 8 3s8-1.34 8-3V5M4 11v6c0 1.66 3.58 3 8 3s8-1.34 8-3v-6"/></svg></span>DataHub
+    </div>
+    <div class="bp-track bp-row-8">
+      <div class="bp-flow">
+        <a class="bp-box" id="bp-link-datahub-essentials">DataHub Essentials</a><span class="bp-arrow"></span>
+        <a class="bp-box" id="bp-link-associate-datahub">Associate DataHub</a><span class="bp-arrow"></span>
+        <a class="bp-box is-cert" id="bp-link-associate-datahub-cert">Associate DataHub Certification</a><span class="bp-arrow"></span>
+        <a class="bp-box" id="bp-link-data-stewardship">Data Stewardship</a><span class="bp-arrow"></span>
+        <a class="bp-box" id="bp-link-professional-datahub-developer">Professional DataHub Developer</a><span class="bp-arrow"></span>
+        <a class="bp-box is-cert is-wide" id="bp-link-professional-datahub-developer-cert">Professional DataHub Developer Certification</a>
+      </div>
+    </div>
+
+    <!-- Row 9: Flow Developer -->
+    <div class="bp-role bp-row-9" style="--role-color: var(--bp-flow);">
+      <span class="bp-role-icon"><svg viewBox="0 0 24 24"><path d="M3 12c4 0 4-6 8-6s4 6 8 6"/><circle cx="3" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></svg></span>Flow<br>Developer
+    </div>
+    <div class="bp-track bp-row-9">
+      <div class="bp-flow">
+        <a class="bp-box" id="bp-link-associate-flow-essentials">Associate Flow Essentials</a><span class="bp-arrow"></span>
+        <a class="bp-box is-cert is-wide" id="bp-link-associate-flow-essentials-cert">Associate Flow Essentials Certification</a><span class="bp-arrow"></span>
+        <a class="bp-box" id="bp-link-professional-flow-developer">Professional Flow Developer</a>
+      </div>
+    </div>
+
+  </div>
+
+  <p class="bp-footer">Updated May, 2026.</p>
+
+</div>
+
+<script>
+(function () {
+  var URLS = {
+    "bp-link-getting-started": "https://train.boomi.com/getting-started-with-the-boomi-platform",
+    "bp-link-integration-essentials-admin": "https://train.boomi.com/integration-essentials",
+    "bp-link-associate-administrator": "https://train.boomi.com/associate-administration",
+    "bp-link-associate-administrator-cert": "https://train.boomi.com/associate-administrator-certification",
+    "bp-link-administrator-2-windows": "https://train.boomi.com/administrator-2-windows",
+    "bp-link-pro-windows-admin-cert": "https://train.boomi.com/professional-windows-operational-administrator-certification",
+    "bp-link-administrator-2-linux": "https://train.boomi.com/administrator-2-linux",
+    "bp-link-pro-linux-admin-cert": "https://train.boomi.com/professional-linux-operational-administrator-certification",
+    "bp-link-integration-essentials-arch": "https://train.boomi.com/integration-essentials",
+    "bp-link-associate-integration-architect": "https://train.boomi.com/associate-integration-architect",
+    "bp-link-associate-integration-architect-cert": "https://train.boomi.com/associate-integration-architect-certification",
+    "bp-link-runtime-architect-path": "https://train.boomi.com/runtime-architecture-foundations",
+    "bp-link-associate-runtime-architect-cert": "https://train.boomi.com/associate-runtime-architect-certification",
+    "bp-link-integration-essentials-dev": "https://train.boomi.com/integration-essentials",
+    "bp-link-associate-integration-developer": "https://train.boomi.com/associate-integration-developer",
+    "bp-link-associate-developer-cert": "https://train.boomi.com/associate-integration-developer-certification",
+    "bp-link-professional-integration-developer": "https://train.boomi.com/professional-integration-developer",
+    "bp-link-professional-developer-cert": "https://train.boomi.com/professional-integration-developer-certification",
+    "bp-link-integration-essentials-api": "https://train.boomi.com/integration-essentials",
+    "bp-link-associate-integration-developer-api": "https://train.boomi.com/associate-integration-developer",
+    "bp-link-professional-integration-developer-api": "https://train.boomi.com/professional-integration-developer",
+    "bp-link-professional-api-design": "https://train.boomi.com/professional-api-design",
+    "bp-link-professional-api-management": "https://train.boomi.com/professional-api-management",
+    "bp-link-professional-api-design-cert": "https://train.boomi.com/professional-api-design-certification",
+    "bp-link-professional-api-management-cert": "https://train.boomi.com/professional-api-management-certification",
+    "bp-link-integration-essentials-event": "https://train.boomi.com/integration-essentials",
+    "bp-link-associate-integration-developer-event": "https://train.boomi.com/associate-integration-developer",
+    "bp-link-professional-integration-developer-event": "https://train.boomi.com/professional-integration-developer",
+    "bp-link-associate-event-streams": "https://train.boomi.com/associate-event-streams",
+    "bp-link-associate-event-streams-cert": "https://train.boomi.com/associate-event-streams-certification",
+    "bp-link-using-ai-agents-boomi-answers": "https://train.boomi.com/using-ai-agents-boomi-answers",
+    "bp-link-building-ai-agent-agentstudio": "https://train.boomi.com/building-an-ai-agent-with-agentstudio",
+    "bp-link-edi-essentials": "https://train.boomi.com/edi-essentials",
+    "bp-link-integration-essentials-b2b": "https://train.boomi.com/integration-essentials",
+    "bp-link-associate-edi-x12": "https://train.boomi.com/associate-edi-for-x12",
+    "bp-link-associate-edi-x12-cert": "https://train.boomi.com/associate-edi-for-x12-certification",
+    "bp-link-datahub-essentials": "https://train.boomi.com/datahub-essentials",
+    "bp-link-associate-datahub": "https://train.boomi.com/associate-datahub",
+    "bp-link-associate-datahub-cert": "https://train.boomi.com/associate-datahub-certification",
+    "bp-link-data-stewardship": "https://train.boomi.com/data-stewardship",
+    "bp-link-professional-datahub-developer": "https://train.boomi.com/professional-datahub-developer",
+    "bp-link-professional-datahub-developer-cert": "https://train.boomi.com/professional-datahub-developer-certification",
+    "bp-link-associate-flow-essentials": "https://train.boomi.com/associate-flow-essentials",
+    "bp-link-associate-flow-essentials-cert": "https://train.boomi.com/associate-flow-essentials-certification",
+    "bp-link-professional-flow-developer": "https://train.boomi.com/professional-flow-developer"
+  };
+
+  Object.keys(URLS).forEach(function (id) {
+    var el = document.getElementById(id);
+    if (!el) return;
+    var url = URLS[id];
+    if (url && url !== "#") {
+      el.setAttribute("href", url);
+      el.setAttribute("target", "_blank");
+      el.setAttribute("rel", "noopener noreferrer");
+    } else {
+      el.setAttribute("aria-disabled", "true");
+      el.style.opacity = "0.55";
+      el.style.cursor = "not-allowed";
+      el.addEventListener("click", function (e) { e.preventDefault(); });
+    }
+  });
+})();
+</script>
+
+</body>
+</html>
